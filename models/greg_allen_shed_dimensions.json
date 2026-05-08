@@ -1,19 +1,19 @@
 {
-  "name": "greg_allen_shed_p1s_scale_1_16",
+  "name": "greg_allen_shed_p1s_rectangular_scale_1_16",
   "print_scale": 16,
   "source": "Uploaded Greg Allen shed shop drawings",
   "units": "inches",
-  "status": "first workable model based on visible handwritten dimensions",
+  "status": "corrected rectangular-footprint model based on front/back/side elevations",
   "dimensions_in": {
-    "front_width": 45.0,
-    "back_width": 62.25,
+    "width": 62.25,
     "depth": 85.5,
     "eave_height": 45.0,
     "ridge_height": 60.0,
     "base_height": 2.0,
     "wall_thickness": 1.5,
     "roof_thickness": 1.25,
-    "roof_overhang": 3.0
+    "roof_overhang_front_back": 3.0,
+    "roof_overhang_sides": 3.0
   },
   "front_door_in": {
     "width": 45.0,
@@ -24,12 +24,20 @@
     "batten_width": 0.75,
     "batten_depth": 0.35,
     "trim_width": 1.5,
-    "trim_depth": 0.45
+    "trim_depth": 0.45,
+    "corner_trim_width": 1.5,
+    "ridge_cap_width": 2.0
   },
-  "notes": [
-    "The uploaded drawings are handwritten/scanned. The visible dimensions used here are front width 45 in, back width 62.25 in, side/depth 85.5 in, side height 60 in, and eave/wall height 45 in.",
-    "This first model treats the shed as a tapered footprint: narrower at the front and wider at the back.",
-    "The model is scaled 1:16 so it fits within the Bambu Lab P1S 256 mm build volume.",
-    "Roof overhang, wall thickness, trim, siding battens, and door details are printable representation assumptions, not confirmed construction dimensions."
-  ]
+  "interpretation_notes": [
+    "Corrected: the shed is not out of square. The front and back elevations both show the same overall width, so the footprint is rectangular.",
+    "The model now uses a single width of 62.25 in for both front and back and a depth of 85.5 in from the side elevations.",
+    "The centered front double-door detail is represented as 45 in wide by 45 in high, leaving equal side margins on the 62.25 in front wall.",
+    "The model is scaled 1:16 so the full shed fits comfortably inside the Bambu Lab P1S build volume.",
+    "Roof overhang, wall thickness, trim projection, battens, and ridge cap are printable representation assumptions unless confirmed by the construction drawing notes."
+  ],
+  "p1s_estimated_print_size_mm": {
+    "width_without_overhang": 98.82,
+    "depth_without_overhang": 135.73,
+    "height_to_ridge": 95.25
+  }
 }
