@@ -1,56 +1,40 @@
-// Greg Allen shed - first printable Bambu Lab P1S model
-// Source: uploaded handwritten shop drawings
+// Greg Allen shed - corrected rectangular Bambu Lab P1S model
+// Source: uploaded handwritten shop drawings.
+// Corrected interpretation: the shed is square-cornered / rectangular in plan, not tapered.
 // Units in this file are millimeters. Source dimensions are inches, scaled 1:16.
-// Visible drawing dimensions used: front width 45", back width 62.25", depth 85.5",
-// wall/eave height 45", ridge height 60".
+// Drawing dimensions used: width 62.25", depth 85.5", eave height 45", ridge height 60".
 
 $fn = 48;
 scale_factor = 16;
 function inch(v) = v * 25.4 / scale_factor;
 
-front_width = inch(45);
-back_width = inch(62.25);
-depth = inch(85.5);
+shed_width = inch(62.25);
+shed_depth = inch(85.5);
 eave_height = inch(45);
 ridge_height = inch(60);
 base_height = inch(2);
 wall_t = inch(1.5);
 roof_t = inch(1.25);
-roof_overhang = inch(3);
+roof_overhang_front_back = inch(3);
+roof_overhang_sides = inch(3);
 
 batten_spacing = inch(7.5);
 batten_w = max(inch(0.75), 0.65);
 batten_d = max(inch(0.35), 0.45);
 trim_w = max(inch(1.5), 1.0);
 trim_d = max(inch(0.45), 0.55);
+ridge_cap_w = inch(2);
 
-y_front = -depth / 2;
-y_back = depth / 2;
+y_front = -shed_depth / 2;
+y_back = shed_depth / 2;
 z0 = base_height;
-z_eave = base_height + eave_height;
-z_peak = base_height + ridge_height;
+z_eave = z0 + eave_height;
+z_peak = z0 + ridge_height;
 
 module centered_box(size, center_point, rz = 0) {
   translate(center_point)
     rotate([0, 0, rz])
       cube(size, center = true);
-}
-
-module prism_from_footprint(points, zmin, zmax) {
-  polyhedron(
-    points = concat(
-      [for (p = points) [p[0], p[1], zmin]],
-      [for (p = points) [p[0], p[1], zmax]]
-    ),
-    faces = [
-      [3, 2, 1, 0],
-      [4, 5, 6, 7],
-      [0, 1, 5, 4],
-      [1, 2, 6, 5],
-      [2, 3, 7, 6],
-      [3, 0, 4, 7]
-    ]
-  );
 }
 
 module triangle_prism(xl, xr, yc, t, zbase, zpeak) {
@@ -78,35 +62,19 @@ module quad_plate(p0, p1, p2, p3, t) {
   );
 }
 
-module side_wall(side = 1) {
-  xf = side * front_width / 2;
-  xb = side * back_width / 2;
-  dx = xb - xf;
-  len = sqrt(dx * dx + depth * depth);
-  angle = atan2(depth, dx);
-  centered_box([len, wall_t, eave_height], [(xf + xb) / 2 + side * wall_t / 2, 0, z0 + eave_height / 2], angle);
-}
-
-module side_battens(side = 1) {
-  xf = side * (front_width / 2 + wall_t);
-  xb = side * (back_width / 2 + wall_t);
-  dx = xb - xf;
-  len = sqrt(dx * dx + depth * depth);
-  angle = atan2(depth, dx);
-  count = max(2, floor(len / batten_spacing));
-  for (i = [1 : count - 1]) {
-    t = i / count;
-    x = xf + dx * t + side * batten_d * 0.35;
-    y = y_front + depth * t;
-    centered_box([batten_w, batten_d, eave_height], [x, y, z0 + eave_height / 2], angle);
-  }
-}
-
-module front_back_battens(y, width, label_height = eave_height) {
+module front_back_battens(y, width, height = eave_height) {
   count = max(2, floor(width / batten_spacing));
   for (i = [1 : count - 1]) {
     x = -width / 2 + width * i / count;
-    centered_box([batten_w, batten_d, label_height], [x, y, z0 + label_height / 2]);
+    centered_box([batten_w, batten_d, height], [x, y, z0 + height / 2]);
+  }
+}
+
+module side_battens(x, depth, height = eave_height) {
+  count = max(2, floor(depth / batten_spacing));
+  for (i = [1 : count - 1]) {
+    y = -depth / 2 + depth * i / count;
+    centered_box([batten_d, batten_w, height], [x, y, z0 + height / 2]);
   }
 }
 
@@ -126,28 +94,25 @@ module door_detail() {
 }
 
 module shed_model() {
-  prism_from_footprint([
-    [-front_width / 2 - wall_t, y_front - wall_t],
-    [ front_width / 2 + wall_t, y_front - wall_t],
-    [ back_width / 2 + wall_t, y_back + wall_t],
-    [-back_width / 2 - wall_t, y_back + wall_t]
-  ], 0, base_height);
+  centered_box([shed_width + 2 * wall_t, shed_depth + 2 * wall_t, base_height], [0, 0, base_height / 2]);
+  centered_box([shed_width + 2 * wall_t, wall_t, eave_height], [0, y_front - wall_t / 2, z0 + eave_height / 2]);
+  centered_box([shed_width + 2 * wall_t, wall_t, eave_height], [0, y_back + wall_t / 2, z0 + eave_height / 2]);
+  centered_box([wall_t, shed_depth, eave_height], [-shed_width / 2 - wall_t / 2, 0, z0 + eave_height / 2]);
+  centered_box([wall_t, shed_depth, eave_height], [shed_width / 2 + wall_t / 2, 0, z0 + eave_height / 2]);
+  triangle_prism(-shed_width / 2 - wall_t, shed_width / 2 + wall_t, y_front - wall_t / 2, wall_t, z_eave, z_peak);
+  triangle_prism(-shed_width / 2 - wall_t, shed_width / 2 + wall_t, y_back + wall_t / 2, wall_t, z_eave, z_peak);
 
-  centered_box([front_width + 2 * wall_t, wall_t, eave_height], [0, y_front - wall_t / 2, z0 + eave_height / 2]);
-  centered_box([back_width + 2 * wall_t, wall_t, eave_height], [0, y_back + wall_t / 2, z0 + eave_height / 2]);
-  triangle_prism(-front_width / 2 - wall_t, front_width / 2 + wall_t, y_front - wall_t / 2, wall_t, z_eave, z_peak);
-  triangle_prism(-back_width / 2 - wall_t, back_width / 2 + wall_t, y_back + wall_t / 2, wall_t, z_eave, z_peak);
-  side_wall(-1);
-  side_wall(1);
-
-  quad_plate([0, y_front - roof_overhang, z_peak], [0, y_back + roof_overhang, z_peak], [back_width / 2 + roof_overhang, y_back + roof_overhang, z_eave], [front_width / 2 + roof_overhang, y_front - roof_overhang, z_eave], roof_t);
-  quad_plate([0, y_back + roof_overhang, z_peak], [0, y_front - roof_overhang, z_peak], [-front_width / 2 - roof_overhang, y_front - roof_overhang, z_eave], [-back_width / 2 - roof_overhang, y_back + roof_overhang, z_eave], roof_t);
-  centered_box([inch(2), depth + 2 * roof_overhang, inch(2)], [0, 0, z_peak + inch(0.5)]);
+  quad_plate([0, y_front - roof_overhang_front_back, z_peak], [0, y_back + roof_overhang_front_back, z_peak], [shed_width / 2 + roof_overhang_sides, y_back + roof_overhang_front_back, z_eave], [shed_width / 2 + roof_overhang_sides, y_front - roof_overhang_front_back, z_eave], roof_t);
+  quad_plate([0, y_back + roof_overhang_front_back, z_peak], [0, y_front - roof_overhang_front_back, z_peak], [-shed_width / 2 - roof_overhang_sides, y_front - roof_overhang_front_back, z_eave], [-shed_width / 2 - roof_overhang_sides, y_back + roof_overhang_front_back, z_eave], roof_t);
+  centered_box([ridge_cap_w, shed_depth + 2 * roof_overhang_front_back, ridge_cap_w], [0, 0, z_peak + ridge_cap_w * 0.25]);
 
   door_detail();
-  front_back_battens(y_back + wall_t + batten_d / 2, back_width, eave_height);
-  side_battens(-1);
-  side_battens(1);
+  front_back_battens(y_back + wall_t + batten_d / 2, shed_width, eave_height);
+  side_battens(-shed_width / 2 - wall_t - batten_d / 2, shed_depth, eave_height);
+  side_battens(shed_width / 2 + wall_t + batten_d / 2, shed_depth, eave_height);
+
+  for (sx = [-1, 1]) for (sy = [-1, 1])
+    centered_box([trim_w, trim_w, eave_height], [sx * (shed_width / 2 + wall_t + trim_w / 4), sy * (shed_depth / 2 + wall_t + trim_w / 4), z0 + eave_height / 2]);
 }
 
 shed_model();
