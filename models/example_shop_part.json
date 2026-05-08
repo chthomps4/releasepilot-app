@@ -1,0 +1,25 @@
+{
+  "name": "p1s_example_shop_part",
+  "units": "mm",
+  "thickness": 6,
+  "corner_radius": 1.5,
+  "fn": 96,
+  "outline": [
+    [0, 0],
+    [90, 0],
+    [90, 42],
+    [58, 42],
+    [58, 64],
+    [0, 64]
+  ],
+  "holes": [
+    {"x": 15, "y": 15, "diameter": 5.2},
+    {"x": 75, "y": 15, "diameter": 5.2}
+  ],
+  "slots": [
+    {"x1": 18, "y1": 48, "x2": 42, "y2": 48, "diameter": 6.5}
+  ],
+  "rectangular_cutouts": [
+    {"x": 68, "y": 28, "width": 16, "height": 10, "center": true}
+  ]
+}
