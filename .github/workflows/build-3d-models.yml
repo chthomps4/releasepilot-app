@@ -1,0 +1,36 @@
+name: Build 3D Models
+
+on:
+  push:
+    paths:
+      - "models/**/*.json"
+      - "scripts/build_shop_part.py"
+      - ".github/workflows/build-3d-models.yml"
+  workflow_dispatch:
+
+jobs:
+  build-models:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install OpenSCAD
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openscad
+
+      - name: Build SCAD and STL files
+        run: |
+          mkdir -p model_build
+          for config in models/*.json; do
+            echo "Building $config"
+            python3 scripts/build_shop_part.py "$config" --out-dir model_build --stl
+          done
+
+      - name: Upload model artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bambu-p1s-model-builds
+          path: model_build/
