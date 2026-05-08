@@ -1,0 +1,35 @@
+{
+  "name": "greg_allen_shed_p1s_scale_1_16",
+  "print_scale": 16,
+  "source": "Uploaded Greg Allen shed shop drawings",
+  "units": "inches",
+  "status": "first workable model based on visible handwritten dimensions",
+  "dimensions_in": {
+    "front_width": 45.0,
+    "back_width": 62.25,
+    "depth": 85.5,
+    "eave_height": 45.0,
+    "ridge_height": 60.0,
+    "base_height": 2.0,
+    "wall_thickness": 1.5,
+    "roof_thickness": 1.25,
+    "roof_overhang": 3.0
+  },
+  "front_door_in": {
+    "width": 45.0,
+    "height": 45.0
+  },
+  "detail_in": {
+    "batten_spacing": 7.5,
+    "batten_width": 0.75,
+    "batten_depth": 0.35,
+    "trim_width": 1.5,
+    "trim_depth": 0.45
+  },
+  "notes": [
+    "The uploaded drawings are handwritten/scanned. The visible dimensions used here are front width 45 in, back width 62.25 in, side/depth 85.5 in, side height 60 in, and eave/wall height 45 in.",
+    "This first model treats the shed as a tapered footprint: narrower at the front and wider at the back.",
+    "The model is scaled 1:16 so it fits within the Bambu Lab P1S 256 mm build volume.",
+    "Roof overhang, wall thickness, trim, siding battens, and door details are printable representation assumptions, not confirmed construction dimensions."
+  ]
+}
